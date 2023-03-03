@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2 id="spec2">Works log</h2>
+<div id="work_logs">
+{% if current_user.is_authenticated %}
+    <a href="addjob" class="btn btn-secondary">Добавить миссию</a><br/><br/>
+{% endif %}
+{% for job in jobs %}
+{% set clr = "#c2ffde" if job[4] else "#fff6c1" %}
+<h5>Action #{{ job[6] }}</h5>
+{% if current_user.id == job[5] or current_user.id == 1 %}
+    <div class="btns2">
+        <a href="/addjob/{{ job[6] }}" class="btn btn-warning">
+            Изменить
+        </a>
+        <a href="/job_delete/{{ job[6] }}" class="btn btn-danger">
+            Удалить
+        </a>
+    </div>
+    <br/>
+{% endif %}
+<table class="table">
+  <thead class="thead-light">
+    <tr style="background-color: #e1e1e1">
+      <th scope="col">Название</th>
+      <th scope="col">Тимлид</th>
+      <th scope="col">Продолжительность</th>
+      <th scope="col">Рабочие</th>
+      <th scope="col">Статус</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr style="background-color: #aeeaff">
+      <td>{{ job[0] }}</td>
+      <td>{{ job[1] }}</td>
+      <td>{{ job[2] }}</td>
+      <td>{{ job[3] }}</td>
+      <td style="background-color: {{ clr }}">{{ "Закончена" if job[4] else "Не закончена" }}</td>
+    </tr>
+  </tbody>
+</table>
+{% endfor %}
+</div>
+{% endblock %}
