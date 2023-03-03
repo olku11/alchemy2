@@ -5,7 +5,6 @@ from flask import Flask, render_template, redirect
 from flask_wtf import FlaskForm
 from wtforms import EmailField, PasswordField, SubmitField, BooleanField, StringField, IntegerField
 from wtforms.validators import DataRequired
-from data.news import News
 
 User = user.User
 
