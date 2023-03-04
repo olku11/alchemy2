@@ -2,9 +2,10 @@ import sqlalchemy
 import datetime
 from sqlalchemy import orm
 from data import db_session
+from sqlalchemy_serializer import SerializerMixin
 
 
-class Jobs(db_session.SqlAlchemyBase):
+class Jobs(db_session.SqlAlchemyBase, SerializerMixin):
     __tablename__ = 'jobs'
     id = sqlalchemy.Column(sqlalchemy.Integer,
                            primary_key=True, autoincrement=True)

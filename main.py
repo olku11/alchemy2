@@ -3,10 +3,12 @@ from data import db_session
 from data import user
 from flask import Flask, render_template, redirect
 from flask_wtf import FlaskForm
-from wtforms import EmailField, PasswordField, SubmitField, BooleanField, StringField, IntegerField, DateTimeField, SelectMultipleField
+from wtforms import EmailField, PasswordField, SubmitField, BooleanField, StringField, IntegerField, DateTimeField, \
+    SelectMultipleField
 from wtforms.validators import DataRequired
 from data.job import Jobs
 import datetime
+from data import job_api
 
 User = user.User
 
@@ -34,7 +36,7 @@ class JobForm(FlaskForm):
     w_size = IntegerField("Work size (in hours)", validators=[DataRequired()])
     collab = SelectMultipleField("Collaborators\" IDs", choices=[])
     start_date = DateTimeField("Start date", format="%Y-%m-%d %H:%M:%S",
-                             default=datetime.datetime(year=2023, month=2, day=25, hour=12, minute=0, second=0))
+                               default=datetime.datetime(year=2023, month=2, day=25, hour=12, minute=0, second=0))
     end_date = DateTimeField("End date", format="%Y-%m-%d %H:%M:%S",
                              default=datetime.datetime(year=2024, month=2, day=25, hour=12, minute=0, second=0))
     hazard_level = IntegerField("Hazard level", default=None)
@@ -146,6 +148,9 @@ def addjob():
         return redirect("/jobs")
     return render_template("job_add.html", title="Добавление работы", form=form)
 
+
 if __name__ == "__main__":
     db_session.global_init("db/users.db")
+    app.register_blueprint(job_api.blueprint)
+    app.run()
     app.run(port=8080, host="127.0.0.1")
