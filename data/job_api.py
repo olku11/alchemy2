@@ -2,6 +2,9 @@ import flask
 from data import db_session
 from data.job import Jobs
 from flask import jsonify
+from flask import Flask
+from flask import make_response
+
 
 blueprint = flask.Blueprint(
     'news_api',
@@ -9,6 +12,8 @@ blueprint = flask.Blueprint(
     template_folder='templates'
 )
 
+
+app = Flask(__name__)
 
 @blueprint.route('/api/jobs')
 def get_news():
@@ -23,7 +28,7 @@ def get_news():
     )
 
 
-@blueprint.route('/api/jobs/<int:job_id>', methods=['GET'])
+@blueprint.route('/api/jobs/<job_id>', methods=['GET'])
 def get_one_news(job_id):
     db_sess = db_session.create_session()
     jobs = db_sess.query(Jobs).get(job_id)
@@ -36,3 +41,13 @@ def get_one_news(job_id):
                       "is_finished"))
         }
     )
+
+@app.errorhandler(404)
+def not_found(error):
+    return make_response(jsonify({'error': 'Not found'}), 404)
+
+
+@app.errorhandler(400)
+def bad_request(_):
+    return make_response(jsonify({'error': 'Bad Request'}), 400)
+
