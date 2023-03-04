@@ -2,6 +2,7 @@ import flask
 from data import db_session
 from data.job import Jobs
 from flask import jsonify
+
 blueprint = flask.Blueprint(
     'news_api',
     __name__,
@@ -18,5 +19,20 @@ def get_news():
             'jobs':
                 [item.to_dict(only=('id', 'team_leader', 'job', "work_size", "collaborators", "start_date", "end_date",
                                     "is_finished")) for item in news]
+        }
+    )
+
+
+@blueprint.route('/api/jobs/<int:job_id>', methods=['GET'])
+def get_one_news(job_id):
+    db_sess = db_session.create_session()
+    jobs = db_sess.query(Jobs).get(job_id)
+    if not jobs:
+        return jsonify({'error': 'No id'})
+    return jsonify(
+        {
+            'jobs': jobs.to_dict(
+                only=('id', 'team_leader', 'job', "work_size", "collaborators", "start_date", "end_date",
+                      "is_finished"))
         }
     )
