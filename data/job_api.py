@@ -5,15 +5,14 @@ from flask import jsonify
 from flask import Flask
 from flask import make_response
 
-
 blueprint = flask.Blueprint(
     'news_api',
     __name__,
     template_folder='templates'
 )
 
-
 app = Flask(__name__)
+
 
 @blueprint.route('/api/jobs')
 def get_news():
@@ -32,7 +31,10 @@ def get_news():
 def get_one_news(job_id):
     db_sess = db_session.create_session()
     jobs = db_sess.query(Jobs).get(job_id)
-    if not jobs:
+
+    if not job_id.isdigit():
+        return jsonify({'error': 'not int'})
+    elif not jobs:
         return jsonify({'error': 'No id'})
     return jsonify(
         {
@@ -42,6 +44,7 @@ def get_one_news(job_id):
         }
     )
 
+
 @app.errorhandler(404)
 def not_found(error):
     return make_response(jsonify({'error': 'Not found'}), 404)
@@ -50,4 +53,3 @@ def not_found(error):
 @app.errorhandler(400)
 def bad_request(_):
     return make_response(jsonify({'error': 'Bad Request'}), 400)
-
