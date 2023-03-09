@@ -16,4 +16,4 @@ print(post('http://127.0.0.1:5000/api/jobs', json={'id': 38,
                                                    "is_finished": False,
                                                    'team_leader': 2}).json())
 
-print(post('http://127.0.0.1:5000/api/jobs').json())
+print((post('http://127.0.0.1:5000/api/jobs')).json())
