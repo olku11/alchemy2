@@ -91,3 +91,32 @@ def delete_job(job_id):
     db_sess.delete(job)
     db_sess.commit()
     return jsonify({'success': 'OK'})
+
+
+@blueprint.route('/api/jobs/<int:job_id>', methods=['PUT'])
+def edit_job(job_id):
+    if not request.json:
+        return jsonify({'error': 'Empty request'})
+    elif not all(key in request.json.keys() for key in
+                 ['team_leader', 'job', 'work_size', 'collaborators', "start_date", "end_date", "is_finished"]):
+        return jsonify({'error': 'Bad request'})
+
+    db_sess = db_session.create_session()
+    jobs = db_sess.query(Jobs).filter(Jobs.id == job_id).first()
+    if 'id' in request.json and jobs and job_id != int(request.json['id']):
+        return jsonify({'error': 'Can not editing job id'})
+    if not jobs:
+        return jsonify({'error': 'Bad request'})
+    i = db_sess.query(User).filter(User.id == request.json['team_leader']).first()
+    if not i:
+        return jsonify({'error': 'Bad request'})
+    jobs.team_leader = request.json['team_leader']
+    jobs.job = request.json['job']
+    jobs.work_size = request.json['work_size']
+    jobs.collaborators = request.json['collaborators']
+    jobs.start_date = dt.datetime.strptime(request.json['start_date'], '%Y-%m-%d %H:%M:%S')
+    jobs.end_date = dt.datetime.strptime(request.json['end_date'], '%Y-%m-%d %H:%M:%S')
+    jobs.is_finished = request.json['is_finished']
+    db_sess.add(jobs)
+    db_sess.commit()
+    return jsonify({'success': 'OK'})
