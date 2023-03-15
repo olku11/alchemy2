@@ -6,6 +6,7 @@ from flask import Flask
 from flask import make_response
 from flask import request
 import datetime as dt
+from data.user import User
 
 blueprint = flask.Blueprint(
     'news_api',
@@ -29,20 +30,15 @@ def get_news():
     )
 
 
-@blueprint.route('/api/jobs/<job_id>', methods=['GET'])
+@blueprint.route('/api/jobs/<int:job_id>', methods=['GET'])
 def get_one_news(job_id):
     db_sess = db_session.create_session()
     jobs = db_sess.query(Jobs).get(job_id)
-
-    if not job_id.isdigit():
-        return jsonify({'error': 'not int'})
-    elif not jobs:
+    if not jobs:
         return jsonify({'error': 'No id'})
     return jsonify(
         {
-            'jobs': jobs.to_dict(
-                only=('id', 'team_leader', 'job', "work_size", "collaborators", "start_date", "end_date",
-                      "is_finished"))
+            'jobs': jobs.to_dict()
         }
     )
 
@@ -61,14 +57,17 @@ def bad_request(_):
 def create_jobs():
     if not request.json:
         return jsonify({'error': 'Empty request'})
-    elif not all(key in request.json for key in
+    elif not all(key in request.json.keys() for key in
                  ["id", 'team_leader', 'job', 'work_size', 'collaborators', "start_date", "end_date", "is_finished"]):
         return jsonify({'error': 'Bad request'})
 
     db_sess = db_session.create_session()
-    news = db_sess.query(Jobs).get(request.json['id'])
-    if news:
+    i = db_sess.query(Jobs).filter(Jobs.id == request.json['id']).first()
+    if i:
         return jsonify({'error': 'Id already exists'})
+    i = db_sess.query(User).filter(User.id == request.json['team_leader']).first()
+    if not i:
+        return jsonify({'error': 'Bad request'})
     jobs = Jobs()
     jobs.id = request.json['id']
     jobs.team_leader = request.json['team_leader']
