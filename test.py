@@ -1,4 +1,4 @@
-from requests import get, post
+from requests import get, post, delete
 
 print(get('http://127.0.0.1:5000/api/jobs').json())  # все работает
 print(get('http://127.0.0.1:5000/api/jobs/1').json())  # все работает
@@ -25,3 +25,7 @@ print(post('http://127.0.0.1:5000/api/jobs', json={'id': 44,  # нет тако�
                                                    'team_leader': 5}).json())
 
 print(post('http://127.0.0.1:5000/api/jobs'))  # нет json - <Response [400]>
+print(get('http://127.0.0.1:5000/api/jobs').json())  # все работает
+print(delete('http://127.0.0.1:5000/api/jobs/43').json())  # все работает
+print(delete('http://127.0.0.1:5000/api/jobs/9999').json())  # не работает - нет работы
+print(get('http://127.0.0.1:5000/api/jobs').json())  # все работает
