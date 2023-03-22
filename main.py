@@ -11,6 +11,7 @@ import datetime
 from data import job_api
 from flask import make_response, jsonify
 from data.users_resource import UsersResource, UsersListResource
+from data.jobs_resource import JobsResource, JobsListResource
 from flask_restful import abort, Api
 
 User = user.User
@@ -159,5 +160,8 @@ if __name__ == "__main__":
     app.register_blueprint(job_api.blueprint)
     api.add_resource(UsersListResource, '/api2/users')
     api.add_resource(UsersResource, '/api2/users/<int:user_id>')
+    api.add_resource(JobsListResource, '/api2/jobs')
+    # для одного объекта
+    api.add_resource(JobsResource, '/api2/jobs/<int:job_id>')
     app.run()
     app.run(port=8080, host="127.0.0.1")
