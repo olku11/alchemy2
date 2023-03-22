@@ -10,8 +10,11 @@ from data.job import Jobs
 import datetime
 from data import job_api
 from flask import make_response, jsonify
+from data.users_resource import UsersResource, UsersListResource
+from flask_restful import abort, Api
 
 User = user.User
+
 
 
 class LoginForm(FlaskForm):
@@ -46,6 +49,7 @@ class JobForm(FlaskForm):
 
 
 app = Flask(__name__)
+api = Api(app)
 app.config["SECRET_KEY"] = "yandexlyceum_secret_key"
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -153,5 +157,7 @@ def addjob():
 if __name__ == "__main__":
     db_session.global_init("db/users.db")
     app.register_blueprint(job_api.blueprint)
+    api.add_resource(UsersListResource, '/api/v2/users')
+    api.add_resource(UsersResource, '/api/v2/users/<int:user_id>')
     app.run()
     app.run(port=8080, host="127.0.0.1")
