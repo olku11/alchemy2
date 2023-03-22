@@ -157,7 +157,7 @@ def addjob():
 if __name__ == "__main__":
     db_session.global_init("db/users.db")
     app.register_blueprint(job_api.blueprint)
-    api.add_resource(UsersListResource, '/api/v2/users')
-    api.add_resource(UsersResource, '/api/v2/users/<int:user_id>')
+    api.add_resource(UsersListResource, '/api2/users')
+    api.add_resource(UsersResource, '/api2/users/<int:user_id>')
     app.run()
     app.run(port=8080, host="127.0.0.1")
